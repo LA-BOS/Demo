@@ -36,13 +36,13 @@ class UserController extends Controller
 
         if ($validation->fails()) {
             $_SESSION['errors'] = $validation->errors()->firstOfAll();
-            header('Location: ' . $_ENV['BASE_URL'] . 'user/add');
+            header('Location: ' . $_ENV['BASE_URL'] . 'admin/user/add');
             exit;  
         } else {
             echo "Dữ liệu hợp lệ!";
         }
         $this->userModel->addUser();
-        header('Location: ' . $_ENV['BASE_URL'] . 'user');
+        header('Location: ' . $_ENV['BASE_URL'] . 'admin/user');
     }
     public function update($id)
     {
@@ -64,17 +64,17 @@ class UserController extends Controller
 
         if ($validation->fails()) {
             $_SESSION['errors'] = $validation->errors()->firstOfAll();
-            header('Location: ' . $_ENV['BASE_URL'] . 'user/update/' . $id);
+            header('Location: ' . $_ENV['BASE_URL'] . 'admin/user/update/' . $id);
             exit;  
         } else {
             echo "Dữ liệu hợp lệ!";
         }
         $this->userModel->postUpdateUser($id);
-        header('Location: ' . $_ENV['BASE_URL'] . 'user');
+        header('Location: ' . $_ENV['BASE_URL'] . 'admin/user');
     }
     public function delete($id)
     {
         $this->userModel->deleteUser($id);
-        header('Location: ' . $_ENV['BASE_URL'] . 'user');
+        header('Location: ' . $_ENV['BASE_URL'] . 'admin/user');
     }
 }

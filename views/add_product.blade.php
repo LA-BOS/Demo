@@ -13,7 +13,7 @@
         @php unset($_SESSION['errors']) @endphp
     @endif
 
-    <form action="{{ $_ENV['BASE_URL'] }}product/add" method="post" enctype="multipart/form-data">
+    <form action="{{ $_ENV['BASE_URL'] }}admin/product/add" method="post" enctype="multipart/form-data">
         <label for="">Danh mục</label> <br>
         <select name="category_id" id="">
             @foreach ($categories as $value)

@@ -13,7 +13,7 @@
         @php unset($_SESSION['errors']) @endphp
     @endif
 
-    <form action="{{ $_ENV['BASE_URL'] }}category/add" method="post">
+    <form action="{{ $_ENV['BASE_URL'] }}admin/category/add" method="post">
         <input type="text" name="name" placeholder="Tên">
         <button type="submit">Thêm mới</button>
     </form>

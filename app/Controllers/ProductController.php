@@ -14,8 +14,9 @@ class ProductController extends Controller
     }
     public function index()
     {
+        $search = isset($_GET['search']) ? $_GET['search'] : null;
         $data = $this->productModel->getAllProducts();
-        echo $this->blade->run('list_product', ['data' => $data]);
+        echo $this->blade->run('list_product', ['data' => $data, 'search' => $search]);
     }
     public function add()
     {
@@ -40,7 +41,7 @@ class ProductController extends Controller
 
         if ($validation->fails()) {
             $_SESSION['errors'] = $validation->errors()->firstOfAll();
-            header('Location: ' . $_ENV['BASE_URL'] . 'product/add');
+            header('Location: ' . $_ENV['BASE_URL'] . 'admin/product/add');
             exit;  
         } else {
             echo "Dữ liệu hợp lệ!";
@@ -53,7 +54,7 @@ class ProductController extends Controller
             $img_url = "uploads/$imageName";
         }
         $this->productModel->addProduct($img_url);
-        header('Location: ' . $_ENV['BASE_URL'] . 'product/');
+        header('Location: ' . $_ENV['BASE_URL'] . 'admin/product/');
     }
     public function update($id)
     {
@@ -80,7 +81,7 @@ class ProductController extends Controller
 
         if ($validation->fails()) {
             $_SESSION['errors'] = $validation->errors()->firstOfAll();
-            header('Location: ' . $_ENV['BASE_URL'] . "product/update/$id");
+            header('Location: ' . $_ENV['BASE_URL'] . "admin/product/update/$id");
             exit;  
         } else {
             echo "Dữ liệu hợp lệ!";
@@ -95,7 +96,7 @@ class ProductController extends Controller
             $img_url = "uploads/$imageName";
         }
         $this->productModel->postUpdateProduct($id, $img_url);
-        header('Location: ' . $_ENV['BASE_URL'] . 'product');
+        header('Location: ' . $_ENV['BASE_URL'] . 'admin/product');
     }
     public function delete($id)
     {
@@ -104,6 +105,6 @@ class ProductController extends Controller
             unlink($product['img_thumbnail']);
         }
         $this->productModel->deleteProduct($id);
-        header('Location: ' . $_ENV['BASE_URL'] . 'product');
+        header('Location: ' . $_ENV['BASE_URL'] . 'admin/product');
     }
 }

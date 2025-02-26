@@ -13,7 +13,7 @@
         @php unset($_SESSION['errors']) @endphp
     @endif
 
-    <form action="{{ $_ENV['BASE_URL'] }}user/add" method="post">
+    <form action="{{ $_ENV['BASE_URL'] }}admin/user/add" method="post">
         <input type="text" name="name" placeholder="Tên"> <br>
         <input type="number" name="age" placeholder="Tuổi"> <br>
         <button type="submit">Thêm mới</button>

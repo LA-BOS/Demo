@@ -6,7 +6,7 @@
     <title>Cập nhật Category</title>
 </head>
 <body>
-    <form action="{{ $_ENV['BASE_URL'] }}category/update/{{ $category['id'] }}" method="post">
+    <form action="{{ $_ENV['BASE_URL'] }}admin/category/update/{{ $category['id'] }}" method="post">
         <input type="text" name="name" value="{{ $category['name'] }}"> <br>
         <button type="submit">Cập nhật</button>
     </form>

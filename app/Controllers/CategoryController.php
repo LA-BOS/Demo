@@ -14,8 +14,9 @@ class CategoryController extends Controller
     }
     public function index()
     {
+        $search = isset($_GET['search']) ? $_GET['search'] : null;
         $data = $this->categoryModel->getAllCategories();
-        echo $this->blade->run('list_category', ['data' => $data]);
+        echo $this->blade->run('list_category', ['data' => $data, 'search' => $search]);
     }
     public function add()
     {
@@ -33,13 +34,13 @@ class CategoryController extends Controller
 
         if ($validation->fails()) {
             $_SESSION['errors'] = $validation->errors()->firstOfAll();
-            header('Location: ' . $_ENV['BASE_URL'] . 'category/add');
+            header('Location: ' . $_ENV['BASE_URL'] . 'admin/category/add');
             exit;  
         } else {
             echo "Dữ liệu hợp lệ!";
         }
         $this->categoryModel->addCategory();
-        header('Location: ' . $_ENV['BASE_URL'] . 'category');
+        header('Location: ' . $_ENV['BASE_URL'] . 'admin/category');
     }
     public function update($id)
     {
@@ -59,17 +60,17 @@ class CategoryController extends Controller
 
         if ($validation->fails()) {
             $_SESSION['errors'] = $validation->errors()->firstOfAll();
-            header('Location: ' . $_ENV['BASE_URL'] . 'category/update/' . $id);
+            header('Location: ' . $_ENV['BASE_URL'] . 'admin/category/update/' . $id);
             exit;  
         } else {
             echo "Dữ liệu hợp lệ!";
         }
         $this->categoryModel->postUpdateCategory($id);
-        header('Location: ' . $_ENV['BASE_URL'] . 'category');
+        header('Location: ' . $_ENV['BASE_URL'] . 'admin/category');
     }
     public function delete($id)
     {
         $this->categoryModel->deleteCategory($id);
-        header('Location: ' . $_ENV['BASE_URL'] . 'category');
+        header('Location: ' . $_ENV['BASE_URL'] . 'admin/category');
     }
 }
