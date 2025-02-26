@@ -16,14 +16,19 @@ class ProductModel
         $this->queryBuilder = Database::getQueryBuilder();
     }
 
-    public function getAllProducts()
+    public function getAllProducts($search = null)
     {
-        // Select * from products
-        $stmt = $this->queryBuilder->select('p.*', 'c.name as category_name')
-            ->from('products','p')
+        $query = $this->queryBuilder->select('p.*', 'c.name as category_name')
+            ->from('products', 'p')
             ->join('p', 'categories', 'c', 'p.category_id = c.id')
             ->orderBy('p.id', 'desc');
-        return $stmt->fetchAllAssociative();
+            
+        if ($search) {
+            $query->where('p.name LIKE :search')
+                  ->setParameter('search', '%' . $search . '%');
+        }
+        
+        return $query->fetchAllAssociative();
     }
     public function getAllCategories()
     {

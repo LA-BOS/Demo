@@ -16,13 +16,17 @@ class CategoryModel
         $this->queryBuilder = Database::getQueryBuilder();
     }
 
-    public function getAllCategories()
+    public function getAllCategories($search = null)
     {
-        // Select * from categories
-        $stmt = $this->queryBuilder->select('*')
+        $query = $this->queryBuilder->select('*')
             ->from('categories');
-
-        return $stmt->fetchAllAssociative();
+            
+        if ($search) {
+            $query->where('name LIKE :search')
+                  ->setParameter('search', '%' . $search . '%');
+        }
+        
+        return $query->fetchAllAssociative();
     }
 
     public function addCategory(){

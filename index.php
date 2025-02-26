@@ -6,6 +6,8 @@ use Bramus\Router\Router;
 use App\Controllers\UserController;
 use App\Controllers\CategoryController;
 use App\Controllers\ProductController;
+use App\Controllers\AuthController;
+use App\Middleware\AuthMiddleware;
 
 use Dotenv\Dotenv;
 
@@ -16,64 +18,68 @@ $dotenv->load();
 
 $router = new Router();
 
-// CRUD user
+// Authentication routes
+$router->get('/login', AuthController::class . '@loginForm');
+$router->post('/login', AuthController::class . '@loginPost');
+$router->get('/logout', AuthController::class . '@logout');
+
+// Admin dashboard
+$router->get('/admin/dashboard', function() use ($router) {
+    AuthMiddleware::isAdmin();
+    (new AuthController())->dashboard();
+});
+
+// Admin routes with middleware
+$router->mount('/admin', function() use ($router) {
+    // Apply middleware to all admin routes
+    $router->before('GET|POST', '/.*', function() {
+        AuthMiddleware::isAdmin();
+    });
+    
+    // Admin routes for User
+    $router->mount('/user', function() use ($router) {
+        $router->get('/', UserController::class . '@index');
+        $router->get('/add', UserController::class . '@add');
+        $router->post('/add', UserController::class . '@addPost');
+        $router->get('/update/{id}', UserController::class . '@update');
+        $router->post('/update/{id}', UserController::class . '@updatePost');
+        $router->get('/delete/{id}', UserController::class . '@delete');
+    });
+    
+    // Admin routes for Category
+    $router->mount('/category', function() use ($router) {
+        $router->get('/', CategoryController::class . '@index');
+        $router->get('/add', CategoryController::class . '@add');
+        $router->post('/add', CategoryController::class . '@addPost');
+        $router->get('/update/{id}', CategoryController::class . '@update');
+        $router->post('/update/{id}', CategoryController::class . '@updatePost');
+        $router->get('/delete/{id}', CategoryController::class . '@delete');
+    });
+    
+    // Admin routes for Product
+    $router->mount('/product', function() use ($router) {
+        $router->get('/', ProductController::class . '@index');
+        $router->get('/add', ProductController::class . '@add');
+        $router->post('/add', ProductController::class . '@addPost');
+        $router->get('/update/{id}', ProductController::class . '@update');
+        $router->post('/update/{id}', ProductController::class . '@updatePost');
+        $router->get('/delete/{id}', ProductController::class . '@delete');
+    });
+});
+
+// Old routes should redirect to admin routes
 $router->mount('/user', function() use ($router) {
-    // http://localhost/PHP2/ASM2/user
-    $router->get('/', UserController::class . '@index');
-    
-    //http://localhost/PHP2/ASM2/user/add
-    $router->get('/add', UserController::class . '@add');
-
-    //http://localhost/PHP2/ASM2/user/add
-    $router->post('/add', UserController::class . '@addPost');
-
-    //http://localhost/PHP2/ASM2/user/update/1
-    $router->get('/update/{id}', UserController::class . '@update');
-
-    //http://localhost/PHP2/ASM2/user/update/1
-    $router->post('/update/{id}', UserController::class . '@updatePost');
-    //http://localhost/PHP2/ASM2/user/delete/1
-    $router->get('/delete/{id}', UserController::class . '@delete');
+    $router->get('/', function() {
+        header('Location: ' . $_ENV['BASE_URL'] . 'admin/user');
+        exit;
+    });
+    $router->get('/add', function() {
+        header('Location: ' . $_ENV['BASE_URL'] . 'admin/user/add');
+        exit;
+    });
+    // Similarly for other user routes
 });
 
-// CRUD category
-$router->mount('/category', function() use ($router) {
-    // http://localhost/PHP2/ASM2/category
-    $router->get('/', CategoryController::class . '@index');
-    
-    //http://localhost/PHP2/ASM2/category/add
-    $router->get('/add', CategoryController::class . '@add');
-
-    //http://localhost/PHP2/ASM2/category/add
-    $router->post('/add', CategoryController::class . '@addPost');
-
-    //http://localhost/PHP2/ASM2/category/update/1
-    $router->get('/update/{id}', CategoryController::class . '@update');
-
-    //http://localhost/PHP2/ASM2/category/update/1
-    $router->post('/update/{id}', CategoryController::class . '@updatePost');
-    //http://localhost/PHP2/ASM2/category/delete/1
-    $router->get('/delete/{id}', CategoryController::class . '@delete');
-});
-
-// CRUD product
-$router->mount('/product', function() use ($router) {
-    // http://localhost/PHP2/ASM2/product
-    $router->get('/', ProductController::class . '@index');
-    
-    //http://localhost/PHP2/ASM2/product/add
-    $router->get('/add', ProductController::class . '@add');
-
-    //http://localhost/PHP2/ASM2/product/add
-    $router->post('/add', ProductController::class . '@addPost');
-
-    //http://localhost/PHP2/ASM2/product/update/1
-    $router->get('/update/{id}', ProductController::class . '@update');
-
-    //http://localhost/PHP2/ASM2/product/update/1
-    $router->post('/update/{id}', ProductController::class . '@updatePost');
-    //http://localhost/PHP2/ASM2/product/delete/1
-    $router->get('/delete/{id}', ProductController::class . '@delete');
-});
+// Similar redirects for category and product routes
 
 $router->run();

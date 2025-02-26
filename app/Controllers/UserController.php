@@ -14,8 +14,9 @@ class UserController extends Controller
     }
     public function index()
     {
-        $data = $this->userModel->getAllUsers();
-        echo $this->blade->run('list_user', ['data' => $data]);
+        $search = isset($_GET['search']) ? $_GET['search'] : null;
+        $data = $this->userModel->getAllUsers($search);
+        echo $this->blade->run('list_user', ['data' => $data, 'search' => $search]);
     }
     public function add()
     {
